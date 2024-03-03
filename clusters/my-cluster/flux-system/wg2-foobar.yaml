@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 30m
-  path: ./workspace
+  path: ./clusters/my-cluster/workspace
   prune: true
   sourceRef:
     kind: GitRepository
