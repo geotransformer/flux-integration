@@ -1,5 +1,26 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- gotk-components.yaml
-- gotk-sync.yaml
+  - gotk-components.yaml
+  - gotk-sync.yaml
+patches:
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: all
+      spec:
+        template:
+          spec:
+            containers:
+              - name: manager
+                env:
+                  - name: "ALL_PROXY"
+                    value: "socks5://64.103.36.133:1080"
+                  - name: "HTTPS_PROXY"
+                    value: "http://64.102.249.8:80"
+                  - name: "NO_PROXY"
+                    value: "10.81.1.0/24,10.81.0.0/16,10.96.0.0/16,127.0.0.1,localhost,cisco.com,nip.io,10.194.0.0/16,20.0.0.0/16,192.168.0.0/16,198.18.0.0/16,.svc,.local,svc,svc.cluster.local,dockerhub.cisco.com,.cluster.local.,files-offline.smi-cluster-deployer.10.81.111.53.nip.io,istiod.istio-system.svc,gatekeeper-system.svc,10.81.111.100"      
+    target:
+      kind: Deployment
+      labelSelector: app.kubernetes.io/part-of=flux
